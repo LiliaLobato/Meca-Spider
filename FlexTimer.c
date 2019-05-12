@@ -105,6 +105,27 @@ void FlexTimer_PWM_CH1_Init()
 	FTM0->SC |= FTM_SC_CLKS(FLEX_TIMER_CLKS_1)| FTM_SC_PS(FLEX_TIMER_PS_128);
 }
 
+void FlexTimer_PWM_CH0_Init()
+{
+
+
+	/**Clock gating for FlexTimer*/
+	SIM->SCGC6 |= SIM_SCGC6_FTM0(1);
+	/**When write protection is enabled (WPDIS = 0), write protected bits cannot be written.
+	* When write protection is disabled (WPDIS = 1), write protected bits can be written.*/
+	FTM0->MODE |= FTM_MODE_WPDIS_MASK;
+	/**Enables the writing over all registers*/
+	FTM0->MODE &= ~ FTM_MODE_FTMEN_MASK;
+	/**Assigning a default value for modulo register*/
+	FTM0->MOD = 0x00FF;
+	/**Selects the Edge-Aligned PWM mode mode*/
+	FTM0->CONTROLS[0].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);
+	/**Assign a duty cycle of 50%*/
+	FTM0->CONTROLS[0].CnV = 153;//((FTM0->MOD) * (3/5));//60% of work cycle
+	/**Configure the times*/
+	FTM0->SC |= FTM_SC_CLKS(FLEX_TIMER_CLKS_1)| FTM_SC_PS(FLEX_TIMER_PS_128);
+}
+
 void Compare_init(uint32_t mod, uint32_t cnv, input_capture_els els,
 		uint8_t Flex_Timer_clk_N, uint8_t Flex_Timer_ps_N) {
 	/**Clock gating for FlexTimer*/

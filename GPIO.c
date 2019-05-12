@@ -149,7 +149,7 @@ void PORTB_IRQHandler() /**Entra cuando ocurre una interrupcion en el puerto C*/
 	}
 
 
-	GPIO_clear_interrupt(GPIO_C); //reinicia la interrupción
+	GPIO_clear_interrupt(GPIO_B); //reinicia la interrupción
 
 }
 
@@ -280,30 +280,28 @@ uint32_t GPIO_read_port(gpio_port_name_t portName)
 
 uint8_t GPIO_read_pin(gpio_port_name_t portName, uint8_t pin)
 {
-	uint32_t pin32 = shifting(pin);
 	uint8_t input_value = 0;
 		switch(portName)
 					{
-						case GPIO_A:/* GPIO A is selected*/
-							input_value	= (GPIOA->PDIR); /*assigns to input_value the value of pin x of PORT A*/
+						case GPIO_A:/** GPIO A is selected*/
+							input_value	= ((GPIOA->PDIR) >> pin) & TRUE; /**assigns to input_value the value of pin x of PORT A*/
 							break;
-						case GPIO_B:/* GPIO B is selected/
-							input_value	= (GPIOB->PDIR); /*assigns to input_value the value of pin x of PORT B*/
+						case GPIO_B:/** GPIO B is selected*/
+							input_value	= (GPIOB->PDIR >> pin) & TRUE; /**assigns to input_value the value of pin x of PORT B*/
 							break;
-						case GPIO_C:/* GPIO C is selected/
-							input_value	= (GPIOC->PDIR); /*assigns to input_value the value of pin x of PORT C*/
+						case GPIO_C:/** GPIO C is selected*/
+							input_value	= ((GPIOC->PDIR) >> pin) & TRUE; /**assigns to input_value the value of pin x of PORT C*/
 							break;
-						case GPIO_D:/* GPIO D is selected/
-							input_value	= (GPIOD->PDIR); /*assigns to input_value the value of pin x of PORT D*/
+						case GPIO_D:/** GPIO D is selected*/
+							input_value	= (GPIOD->PDIR >> pin) & TRUE; /**assigns to input_value the value of pin x of PORT D*/
 							break;
-						case GPIO_E: /* GPIO E is selected/
-							input_value	= (GPIOE->PDIR); /*assigns to input_value the value of pin x of PORT E*/
+						case GPIO_E: /** GPIO E is selected*/
+							input_value	= (GPIOE->PDIR >> pin) & TRUE; /**assigns to input_value the value of pin x of PORT E*/
 							break;
-						default:/*If doesn't exist the option*/
+						default:/**If doesn't exist the option*/
 							input_value = 0x00000000;
 						break;
 					}
-		input_value = input_value & pin32;
 		return input_value;
 }
 

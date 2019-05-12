@@ -22,6 +22,11 @@ typedef enum{PB_SW2, /*!< Definition to select SW2*/
 			 PB_SW3  /*!< Definition to select SW3*/
 			} PushButton_SW_name;
 
+typedef enum
+{
+	PB0, PB1, PB2, PB3, PB4, PB5, PB6, RMC_SW2, LMC_SW2, RMC_SW1, LMC_SW1, ALL
+} EXTERNAL_PushButton_SW_name;
+
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/
@@ -33,6 +38,8 @@ void PushButton_sw2_config(void);
 void PushButton_sw3_config(void);
 void PushButton_external_config(gpio_port_name_t GPIOx, BitsType pin, uint32_t MASK);
 void PushButton_external_handler(void);
+uint8_t get_pbn_flag(EXTERNAL_PushButton_SW_name ext_PB);
+void clear_pbn_flag(EXTERNAL_PushButton_SW_name ext_PB);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/

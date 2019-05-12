@@ -53,6 +53,9 @@ void PWM_init_p(ft_mode mode);
 void Capture_init(ft_mode mode);
 
 void FlexTimer_PWM_Init();
+void FlexTimer_PWM_CH0_Init();
+void FlexTimer_PWM_CH1_Init();
+void FlexTimer_PWM_CH2_Init();
 
 void FlexTimer_update_channel_value(uint16_t channel_value);
 void FlexTimer_update_mod_value(uint16_t FTM_channel, float frecuency_scaler);

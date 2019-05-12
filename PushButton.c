@@ -8,6 +8,7 @@
 #include "PushButton.h"
 #include "MK64F12.h"
 #include "GPIO.h"
+#include "stdio.h"
 
 uint8_t pb0_flag_g = FALSE;
 uint8_t pb1_flag_g = FALSE;
@@ -16,6 +17,11 @@ uint8_t pb3_flag_g = FALSE;
 uint8_t pb4_flag_g = FALSE;
 uint8_t pb5_flag_g = FALSE;
 uint8_t pb6_flag_g = FALSE;
+uint8_t g_RMC_SW2_flag = FALSE;
+uint8_t g_LMC_SW2_flag = FALSE;
+uint8_t g_RMC_SW1_flag = FALSE;
+uint8_t g_LMC_SW1_flag = FALSE;
+
 
 gpio_pin_control_register_t input_intr_config = GPIO_MUX1 | GPIO_PE | GPIO_PS | INTR_FALLING_EDGE;	//Configuración del GPIO
 
@@ -60,48 +66,118 @@ uint32_t PushButton_read(PushButton_SW_name sw) {
 
 void PushButton_external_handler(void)
 {
-	uint8_t pb0_state = GPIO_read_pin(GPIO_B, bit_2); //Obtiene el estado del B0
-	uint8_t pb1_state = GPIO_read_pin(GPIO_B, bit_3); //Obtiene el estado del B1
-	uint8_t pb2_state = GPIO_read_pin(GPIO_B, bit_10); //Obtiene el estado del B2
-	uint8_t pb3_state = GPIO_read_pin(GPIO_B, bit_11); //Obtiene el estado del B3
-	uint8_t pb4_state = GPIO_read_pin(GPIO_B, bit_9); //Obtiene el estado del B4
-	uint8_t pb5_state = GPIO_read_pin(GPIO_B, bit_19); //Obtiene el estado del B5
-	uint8_t pb6_state = GPIO_read_pin(GPIO_B, bit_18); //Obtiene el estado del B6
+	uint8_t right_motor_cal2_state = GPIO_read_pin(GPIO_B, bit_3); //Obtiene el estado del pin de calibracion del motor derecho
+	uint8_t left_motor_cal2_state = GPIO_read_pin(GPIO_B, bit_11); //Obtiene el estado del pin de calibracion del motor izquierdo
+	uint8_t right_motor_cal1_state = GPIO_read_pin(GPIO_B, bit_2); //Obtiene el estado del pin de calibracion del motor derecho
+	uint8_t left_motor_cal1_state = GPIO_read_pin(GPIO_B, bit_10); //Obtiene el estado del pin de calibracion del motor izquierdo
 
 		/**PB has logic 0 when its pressed*/
-	if((FALSE == pb0_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
+	if((FALSE == right_motor_cal2_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
 	{
-		pb0_flag_g = TRUE; //activa la bandera correspondiente
+		g_RMC_SW2_flag = TRUE; //activa la bandera correspondiente
 	}
 
-	if((FALSE == pb1_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
+	if((FALSE == left_motor_cal2_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
 	{
-		pb1_flag_g = TRUE; //activa la bandera correspondiente
+		g_LMC_SW2_flag = TRUE; //activa la bandera correspondiente
+	}
+	if((FALSE == right_motor_cal1_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
+	{
+		g_RMC_SW1_flag = TRUE; //activa la bandera correspondiente
 	}
 
-	if((FALSE == pb2_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
+	if((FALSE == left_motor_cal1_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
 	{
-		pb2_flag_g = TRUE; //activa la bandera correspondiente
+		g_LMC_SW1_flag = TRUE; //activa la bandera correspondiente
 	}
 
-	if((FALSE == pb3_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
-	{
-		pb3_flag_g = TRUE; //activa la bandera correspondiente
-	}
 
-	if((FALSE == pb4_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
-	{
-		pb4_flag_g = TRUE; //activa la bandera correspondiente
-	}
+}
 
-	if((FALSE == pb5_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
+uint8_t get_pbn_flag(EXTERNAL_PushButton_SW_name ext_PB){
+	switch(ext_PB)
 	{
-		pb5_flag_g = TRUE; //activa la bandera correspondiente
-	}
-
-	if((FALSE == pb6_state))//Pregunta quien fue el que interrumpio, para saber que bandera activar
-	{
-		pb6_flag_g = TRUE; //activa la bandera correspondiente
+	case PB0:
+		return(pb0_flag_g);
+		break;
+	case PB1:
+		return(pb1_flag_g);
+		break;
+	case PB2:
+		return(pb2_flag_g);
+		break;
+	case PB3:
+		return(pb3_flag_g);
+		break;
+	case PB4:
+		return(pb4_flag_g);
+		break;
+	case PB5:
+		return(pb5_flag_g);
+		break;
+	case PB6:
+		return(pb6_flag_g);
+		break;
+	case RMC_SW2:
+		return(g_RMC_SW2_flag);
+		break;
+	case LMC_SW2:
+		return(g_LMC_SW2_flag);
+		break;
+	case RMC_SW1:
+		return(g_RMC_SW1_flag);
+		break;
+	case LMC_SW1:
+		return(g_LMC_SW1_flag);
+		break;
 	}
 }
 
+
+void clear_pbn_flag(EXTERNAL_PushButton_SW_name ext_PB){
+	switch(ext_PB)
+	{
+	case PB0:
+		pb0_flag_g = FALSE;
+		break;
+	case PB1:
+		pb1_flag_g = FALSE;
+		break;
+	case PB2:
+		pb2_flag_g = FALSE;
+		break;
+	case PB3:
+		pb3_flag_g = FALSE;
+		break;
+	case PB4:
+		pb4_flag_g = FALSE;
+		break;
+	case PB5:
+		pb5_flag_g = FALSE;
+		break;
+	case PB6:
+		pb6_flag_g = FALSE;
+		break;
+	case RMC_SW2:
+		g_RMC_SW2_flag = FALSE;
+		break;
+	case LMC_SW2:
+		g_LMC_SW2_flag = FALSE;
+		break;
+	case RMC_SW1:
+		g_RMC_SW1_flag = FALSE;
+		break;
+	case LMC_SW1:
+		g_LMC_SW1_flag = FALSE;
+		break;
+	case ALL:
+		pb0_flag_g = FALSE;
+		pb1_flag_g = FALSE;
+		pb2_flag_g = FALSE;
+		pb3_flag_g = FALSE;
+		pb4_flag_g = FALSE;
+		pb5_flag_g = FALSE;
+		pb6_flag_g = FALSE;
+		break;
+	}
+}
