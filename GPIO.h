@@ -228,4 +228,6 @@ void GPIO_toogle_pin(gpio_port_name_t port_name, uint8_t pin);
 
 uint32_t shifting(uint8_t pin);
 
+void GPIO_callback_init(gpio_port_name_t port_name,void (*handler)(void));
+
 #endif /* GPIO_H_ */

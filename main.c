@@ -32,117 +32,47 @@
  * @file    Final_MecaAra�a.c
  * @brief   Application entry point.
  */
-#include <stdio.h>
-#include "MecaTeclado.h"
-#include "GPIO.h"
-#include "PushButton.h"
-#include "Bits.h"
 #include "main.h"
+
 
 int main(void) {
 
 	MecaTeclado_init();
 
-	//state machine
+	//state machine/////////////////////////////////
 	set_pbn_flag(NADA);
 	clear_ejecucion_num();
-	static arana_status arana_state = QUIETO;
+	////////////////////////////////////////////////
+
+	/**Enables the clock of PortB in order to configures TX and RX of UART peripheral*/
+	SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK;
+	/**Configures the pin control register of pin16 in PortB as UART RX*/
+	PORTC->PCR[14] = PORT_PCR_MUX(3);
+	/**Configures the pin control register of pin16 in PortB as UART TX*/
+	PORTC->PCR[15] = PORT_PCR_MUX(3);
+	/**Configures UART 0 to transmit/receive at 11520 bauds with a 21 MHz of clock core*/
+	UART_init(UART_4, 21000000, BD_9600);
+	/**Enables the UART 0 interrupt*/
+	UART_interrupt_enable(UART_4);
+	/**Enables the UART 0 interrupt in the NVIC*/
+	UART_put_string(UART_4, "AT+NAMEITESO\r\n");
+
+	NVIC_enable_interrupt_and_priotity(UART4_IRQ, PRIORITY_5);
+
+	/**Enables interrupts*/
+	NVIC_global_enable_interrupts;
 
 	while (1) {
+
 		//Cambio pit para botones
 		MecaTeclado_Senales();
-		if (TRUE == get_pbn_change_flag()) {
-			//revisar buzon
-			if (GRABAR == arana_state & QUIETO != FSM_Moore[arana_state].next[get_pbn_flag()] & EJECUTAR != FSM_Moore[arana_state].next[get_pbn_flag()]) {
-				printf("guardo secuencia");
-			} else {
-				arana_state = FSM_Moore[arana_state].next[get_pbn_flag()];
-				clear_ejecucion_num();
-			}
-			clear_pbn_change_flag();
-		}
-		switch (arana_state) {
-		case AUTONOMO:
-			if (FALSE == get_ejecucion_num()) {
-				printf("modo autonomo\n");
-				set_ejecucion_num();
-			}
-			arana_state = ALEATORIO;
-			clear_ejecucion_num();
-			break;
-		case GRABAR:
-			if (FALSE == get_ejecucion_num()) {
-				printf("grabar\n");
-				set_ejecucion_num();
-			}
-			break;
-		case EJECUTAR:
-			if (FALSE == get_ejecucion_num()) {
-				printf("ejecutar\n");
-				set_ejecucion_num();
-			}
-			break;
-		case GUARDIAN:
-			if (FALSE == get_ejecucion_num()) {
-				printf("modo guardian\n");
-				set_ejecucion_num();
-			}
-			arana_state = ALEATORIO;
-			clear_ejecucion_num();
-			break;
-		case ATAQUE:
-			if (FALSE == get_ejecucion_num()) {
-				printf("modo ataque\n");
-				set_ejecucion_num();
-			}
-			arana_state = ALEATORIO;
-			clear_ejecucion_num();
-			break;
-		case PASO_ADELANTE:
-			if (FALSE == get_ejecucion_num()) {
-				printf("adelante\n");
-				set_ejecucion_num();
-			}
-			arana_state = QUIETO;
-			clear_ejecucion_num();
-			break;
-		case PASO_ATRAS:
-			if (FALSE == get_ejecucion_num()) {
-				printf("atras\n");
-				set_ejecucion_num();
-			}
-			arana_state = QUIETO;
-			clear_ejecucion_num();
-			break;
-		case VUELTA_DERECHA:
-			if (FALSE == get_ejecucion_num()) {
-				printf("vuelta derecha\n");
-				set_ejecucion_num();
-			}
-			arana_state = QUIETO;
-			clear_ejecucion_num();
-			break;
-		case VUELTA_IZQUIERDA:
-			if (FALSE == get_ejecucion_num()) {
-				printf("vuelta izquierda\n");
-				set_ejecucion_num();
-			}
-			arana_state = QUIETO;
-			clear_ejecucion_num();
-			break;
-		case QUIETO:
-			if (FALSE == get_ejecucion_num()) {
-				printf("quieto\n");
-				set_ejecucion_num();
-			}
-			break;
-		case ALEATORIO:
-			if (FALSE == get_ejecucion_num()) {
-				printf("modo aleatorio\n");
-				set_ejecucion_num();
-			}
-			break;
-		}
+
+		//Cambio de estado
+		StateMachine_cambio();
+
+		//Ejecucion de estado actual
+		StateMachine_currentState();
+
 	}
 
 	return 0;

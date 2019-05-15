@@ -51,5 +51,9 @@ void get_pbn_pressed(void);
  */
 uint32_t PushButton_read(PushButton_SW_name sw);
 
+uint8_t get_pbn_change_flag();
+
+void clear_pbn_change_flag();
+void set_pbn_change_flag();
 
 #endif /* PUSHBUTTON_H_ */
