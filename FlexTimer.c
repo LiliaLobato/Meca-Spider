@@ -79,7 +79,7 @@ void FlexTimer_PWM_CH2_Init()
 	/**Selects the Edge-Aligned PWM mode mode*/
 	FTM0->CONTROLS[2].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);
 	/**Assign a duty cycle of 50%*/
-	FTM0->CONTROLS[2].CnV = 153;//((FTM0->MOD) * (3/5));//50% of work cycle
+	FTM0->CONTROLS[2].CnV = 200;//80% of work cycle
 	/**Configure the times*/
 	FTM0->SC |= FTM_SC_CLKS(FLEX_TIMER_CLKS_1)| FTM_SC_PS(FLEX_TIMER_PS_128);
 }
@@ -100,7 +100,7 @@ void FlexTimer_PWM_CH1_Init()
 	/**Selects the Edge-Aligned PWM mode mode*/
 	FTM0->CONTROLS[1].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);
 	/**Assign a duty cycle of 50%*/
-	FTM0->CONTROLS[1].CnV = 153;//((FTM0->MOD) * (3/5));//60% of work cycle
+	FTM0->CONTROLS[1].CnV = 200;//80% of work cycle
 	/**Configure the times*/
 	FTM0->SC |= FTM_SC_CLKS(FLEX_TIMER_CLKS_1)| FTM_SC_PS(FLEX_TIMER_PS_128);
 }
@@ -121,7 +121,7 @@ void FlexTimer_PWM_CH0_Init()
 	/**Selects the Edge-Aligned PWM mode mode*/
 	FTM0->CONTROLS[0].CnSC = FTM_CnSC_MSB(1) | FTM_CnSC_ELSB(1);
 	/**Assign a duty cycle of 50%*/
-	FTM0->CONTROLS[0].CnV = 153;//((FTM0->MOD) * (3/5));//60% of work cycle
+	FTM0->CONTROLS[0].CnV = 200; //80% of work cycle
 	/**Configure the times*/
 	FTM0->SC |= FTM_SC_CLKS(FLEX_TIMER_CLKS_1)| FTM_SC_PS(FLEX_TIMER_PS_128);
 }

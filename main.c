@@ -55,23 +55,23 @@ int main(void)
    	NVIC_global_enable_interrupts;
 
    	Meccaspider_init();
-   	uint8_t i;
+
 	for(;;)
 	{
 
 		if(TRUE == get_sw2_flag())
 		{
-			for(i = 0; i < 3; i++)
-			{
+
 			Meccaspider_move(current_direction); //tgo forward
 			clear_sw2_flag();
-			delay(500);
-			}
+
+
 		}
 		if(TRUE == get_sw3_flag())
 		{
 			current_direction++;
-			if(4 == current_direction)
+
+			if(5 == current_direction)
 			{
 				current_direction = FORWARD;
 			}
